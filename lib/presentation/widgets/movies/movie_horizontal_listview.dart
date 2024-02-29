@@ -106,7 +106,7 @@ class _Slide extends StatelessWidget {
                     );
                   }
                   return GestureDetector(
-                    onTap: () => context.push('/movie/${movie.id}'),
+                    onTap: () => context.push('/home/0/movie/${movie.id}'),
                     child: FadeIn(child: child),
                   );
                 },
@@ -168,13 +168,18 @@ class _Title extends StatelessWidget {
       margin: const EdgeInsets.symmetric(horizontal: 15),
       child: Row(
         children: [
-          if (title != null) Text(title!, style: titleStyle),
+          if (title != null)
+            Text(
+              title!,
+              style: titleStyle,
+            ),
           const Spacer(),
           if (subTitle != null)
             FilledButton(
-                style: const ButtonStyle(visualDensity: VisualDensity.compact),
-                onPressed: () {},
-                child: Text(subTitle!)),
+              style: const ButtonStyle(visualDensity: VisualDensity.compact),
+              onPressed: () {},
+              child: Text(subTitle!),
+            ),
         ],
       ),
     );
