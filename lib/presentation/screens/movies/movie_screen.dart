@@ -54,21 +54,41 @@ class MovieScreenState extends ConsumerState<MovieScreen> {
   }
 }
 
-class _CustomSliverAppBar extends StatelessWidget {
+//? FutureProvider -> cuando se tiene alguna tarea asincrona para uqe se resuelva y cuando se resuelva ya se tiene el valor
+final isFavoriteProvider =
+    FutureProvider.family.autoDispose((ref, int movieId) {
+  final locaStorageRepository = ref.watch(localStorageRepositoryProvider);
+
+  return locaStorageRepository.isMovieFavorite(movieId);
+});
+
+class _CustomSliverAppBar extends ConsumerWidget {
   final Movie movie;
   const _CustomSliverAppBar({required this.movie});
 
   @override
-  Widget build(BuildContext context) {
+  Widget build(BuildContext context, WidgetRef ref) {
+    final isFavoriteMovieFuture = ref.watch(isFavoriteProvider(movie.id));
+
     final size = MediaQuery.of(context).size;
 
     return SliverAppBar(
       actions: [
         IconButton(
-            onPressed: () {},
-            icon: const Icon(Icons.favorite_rounded, color: Colors.red)),
-        IconButton(
-            onPressed: () {}, icon: const Icon(Icons.favorite_border_rounded)),
+          onPressed: () {
+            ref.watch(localStorageRepositoryProvider).toggleFavorite(movie);
+
+            //? invalida el estado del provider y lo regresa al estado original
+            ref.invalidate(isFavoriteProvider(movie.id));
+          },
+          icon: isFavoriteMovieFuture.when(
+            data: (isFavorite) => isFavorite
+                ? const Icon(Icons.favorite_rounded, color: Colors.red)
+                : const Icon(Icons.favorite_border_rounded),
+            error: (_, __) => throw UnimplementedError(),
+            loading: () => const CircularProgressIndicator(strokeWidth: 2),
+          ),
+        ),
       ],
       backgroundColor: Colors.black,
       expandedHeight: size.height * 0.7,
