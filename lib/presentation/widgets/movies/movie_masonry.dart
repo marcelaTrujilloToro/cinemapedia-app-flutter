@@ -7,11 +7,7 @@ class MovieMasonry extends StatefulWidget {
   final List<Movie> movies;
   final VoidCallback? loadNextPage;
 
-  const MovieMasonry({
-    super.key,
-    required this.movies,
-    this.loadNextPage,
-  });
+  const MovieMasonry({super.key, required this.movies, this.loadNextPage});
 
   @override
   State<MovieMasonry> createState() => _MovieMasonryState();
@@ -54,9 +50,7 @@ class _MovieMasonryState extends State<MovieMasonry> {
           if (index == 1) {
             return Column(
               children: [
-                const SizedBox(
-                  height: 40,
-                ),
+                const SizedBox(height: 20),
                 MoviePosterLink(movie: widget.movies[index])
               ],
             );
